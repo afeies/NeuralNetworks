@@ -1,0 +1,19 @@
+digraph {
+	rankdir=LR size=10
+	X [label="X (Input)" shape=ellipse]
+	Z1 [label="Z1 = X·W1 + b1" shape=box]
+	A1 [label="A1 = ReLU(Z1)" shape=box]
+	Z2 [label="Z2 = A1·W2 + b2" shape=box]
+	A2 [label="A2 = Sigmoid(Z2)" shape=box]
+	L [label="Loss = BCE(A2, y)" shape=diamond]
+	X -> Z1 [label="W1, b1"]
+	Z1 -> A1
+	A1 -> Z2 [label="W2, b2"]
+	Z2 -> A2
+	A2 -> L [label="Compare with y"]
+	L -> A2 [label="dL/dA2" style=dashed]
+	A2 -> Z2 [label="dZ2 = A2 - y" style=dashed]
+	Z2 -> A1 [label="dA1 = dZ2·W2ᵀ" style=dashed]
+	A1 -> Z1 [label="dZ1 = dA1·ReLU'" style=dashed]
+	Z1 -> X [label="dW1 = Xᵀ·dZ1" style=dashed]
+}

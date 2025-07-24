@@ -1,0 +1,27 @@
+digraph {
+	rankdir=LR size=8
+	x1 [label=x1 fillcolor=lightblue shape=circle style=filled]
+	x2 [label=x2 fillcolor=lightblue shape=circle style=filled]
+	h1 [label="h1
+(b1[0])" fillcolor=lightyellow shape=circle style=filled]
+	h2 [label="h2
+(b1[1])" fillcolor=lightyellow shape=circle style=filled]
+	h3 [label="h3
+(b1[2])" fillcolor=lightyellow shape=circle style=filled]
+	h4 [label="h4
+(b1[3])" fillcolor=lightyellow shape=circle style=filled]
+	y [label="Output
+(b2)" fillcolor=lightgreen shape=circle style=filled]
+	x1 -> h1 [label=W1]
+	x1 -> h2 [label=W1]
+	x1 -> h3 [label=W1]
+	x1 -> h4 [label=W1]
+	x2 -> h1 [label=W1]
+	x2 -> h2 [label=W1]
+	x2 -> h3 [label=W1]
+	x2 -> h4 [label=W1]
+	h1 -> y [label=W2]
+	h2 -> y [label=W2]
+	h3 -> y [label=W2]
+	h4 -> y [label=W2]
+}
