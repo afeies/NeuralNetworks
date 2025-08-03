@@ -11,11 +11,14 @@
     4. RNN output -> probabilites over tokens
     - softmax gives probabilities for each token in the vocabulary as the next character
 
+- `nn.GRU`
+
 - `seq_len` = 128
     - input: 128 characters from the text
     - output: the next 128 characters (each shifted by 1 position)
 
 - `batch_size` = 128
+    - batch size: the number of training examples process together on one forward and backward pass
     - 128 sequences
 
         - Input tensor to the model for one batch has shape:
@@ -27,6 +30,10 @@
             - depends on the dataset
         - `embedding_dim`: size of the vector for each character
             - the larger, the more detailed representation of each character
+    
+    V (vocab size) = 3: ids {0, 1, 2}
+    E (embedding_dim) = 4
+
 
 - hidden state - the model's memory
     - `hidden_dim`: how many features (neurons) the hdden state has at each time step
