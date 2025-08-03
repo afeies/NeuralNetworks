@@ -11,7 +11,22 @@
     4. RNN output -> probabilites over tokens
     - softmax gives probabilities for each token in the vocabulary as the next character
 
+https://docs.pytorch.org/docs/stable/generated/torch.nn.GRU.html
 - `nn.GRU`
+    - a GRU keeps a hidden state h_t and updates it with two gates:
+    
+    GRU operations
+
+    1. reset gate: $r_t = \sigma(W_r * [h_{t - 1}, x_t])$
+    - determines how much of the previous hidden state h_(t - 1) should be forgotten
+        - increases when the current char should be interpreted through what just came (e.g. prefixes)
+        - lowers when a new topic appears (stop consulting old context)
+
+    2. update gate: $z_t = \sigma(W_z * [h_{t - 1}, x_t])$
+    - determines how much of the new information x_t should be used to update the hidden state
+        - increases when the broader state should persist across characters
+        - lowers when the new input should overwrie the old memory (e.g. negation)
+
 
 - `seq_len` = 128
     - input: 128 characters from the text
