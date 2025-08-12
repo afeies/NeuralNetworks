@@ -1,3 +1,92 @@
+## Summary of Algorithm
+1. Initialize Parameters
+- define a neural network class inheriting from `nn.Module`
+    - `nn.Embedding` to learn a vector representation for each character
+    - `nn.GRU` to model sequential dependencies between characters
+    - `nn.Linear` to map hidden states to vocab scores (logits)
+- layers used:
+    - `Embedding(vocab_size, embedding_dim)`
+    - `GRU(embedding_dim, hidden_dim, num_layers)`
+    - `Linear(hidden_dim, vocab_size)`
+2. Forward Pass
+- call model(x) which internally runs forward(x, h=None)
+- sequence of operations:
+    1. input: x is a batch of token IDs of shape [B, T]
+    2. embedding layer: maps IDs -> vectors [B, T, E]
+    3. GRU layer: processes vectors sequentially -> [B, T, H]
+    4. linear layer: converts GRU output to logits -> [B, T, V]
+- the output logits represent unnormalized scores for each character in the vocabulary at every time step
+3. Loss Calculation
+- use `nn.CrossEntropyLoss()` to compute next-character prediction loss
+- compares predicted logits ([B*T, V]) against targest token IDs ([B*T])
+4. Backprogagation
+- call loss.backward() to compute gradients of all parameters
+- PyTorch builds and tracks the computation graph automatically
+- gradients are stored in .grad attributes of each parameter
+5. Parameter Update
+- call `optimizer.step()` (using `torch.optim.Adam`) to apply parameter updates
+- clear previous gradients with `optimizer.zero_grad()` or `zero_grad(set_to_none=True)`
+6. Repeat
+- iterate over many epochs:
+    - for each batch, preform forward -> loss -> backward -> update
+    - occasionally sample generate text to check training quality
+    - evaluate validation loss and save checkpoint if improved
+
+
+### New Terms and Concepts
+- Recurrent Neural Network (RNN)
+    - a type of neural network designed to handle sequential data by maintaining a hidden state that evolves over time steps
+    - unlike feedforward networks, RNNs can "remember" previous inputs to make better predictions for the current input
+- Gated Recurrent Unit (GRU)
+    - a variant of RNN that uses gates to control how much of the past information is kept or forgotten
+    - helps solve the vanishing gradient problem and trains more efficiently
+    - each step updates a hidden state based on the previous hidden state and current input
+- Long Short-Term Memory (LSTM)
+    - a variant of RNN that uses three gates (input, forget, output) and a cell state to manage long-term dependencies
+    - similar to GRUs but slightly more complex
+- Embedding Layer
+    - learns a dense vector representation (embedding) for each token in the vocab
+    - replaces one-hot vectors for characters
+        - has vector length of V
+        - all values are 0 except for one 1 at the index of the character
+- Sequence Length
+    - the number of characters in each training sample
+- Batch Size
+    - the number of sequences processed in parallel during training
+- Vocabulary
+    - the total number of unique characters in the dataset
+- Bits Per Character (BPC)
+    - a measurement of how well the model predicts each character, interpreted in bits
+    - lower BPC means better predictions
+    - `BPC = loss (in nats) / ln(2)`
+- Gradient Clipping
+    - a technique used to prevent exploding gradients in RNNs
+    - limits the overall norm of the 
+- Temperature
+    - a sampling parameter that controls the randomness of predictions during text generation
+        - high temperature (> 1.0): more random
+        - low temperature (< 1.0): more conservative
+- Top-k and Top-p Sampling
+    - techniques used during generation to restrict sampling:
+        - top-k: only keep k most like characters
+        - 
+
+- GRU
+- LSTM
+- embedding layer
+- logits
+
+- Unnormalized vs Normalized Outputs
+    - unnormalized values = logits
+        - the output of the final linear layer
+        - raw scores - they can be any real number 
+        - not yet probabilites
+    - normalized values = probabilities
+        - after applying softmax to logits
+        - all values between 0 and 1
+        - sum to 1 for each prediction
+    
+
 - token - the smallest unit of text that a model processes as a single element
     - can be whatever segmentation you choose
     - in this RNN, tokens are individual characters from our training text
@@ -70,3 +159,22 @@ https://docs.pytorch.org/docs/stable/generated/torch.nn.GRU.html
     - adaptive compared to top k
         - model is confident: few tokens are considered
         - model is uncertain: moke tokens are considered
+
+### Letter Notations
+- B - batch size, 128
+- T - sequence length, 128
+- E - embedding dimension, 256
+- H - hidden size, 256
+    - number of features in the RNN hidden state
+- L - number of layers, 2
+    - stacked recurrent layers in the RNN
+- V - vocab size
+    - around 65 for Shakespeare
+
+### Common Tensor Shapes
+- inputs (x): [B, T] -> token IDs
+- embeddings (self.emb(x)): [B, T, E]
+- RNN outputs: [B, T, H]
+- logits (self.fc): [B, T, V]
+
+### Shape FLow Diagram
